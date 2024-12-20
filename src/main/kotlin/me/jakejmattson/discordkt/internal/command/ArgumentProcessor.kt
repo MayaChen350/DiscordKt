@@ -70,11 +70,11 @@ internal suspend fun parseArguments(context: DiscordContext, expected: List<Argu
         }
     }
 
-    val error = formatDataMap(conversionData) +
-        if (!hasFatalError && remainingArgs.isNotEmpty()) {
-            hasFatalError = true
-            "\n\nUnused: " + remainingArgs.joinToString(" ")
-        } else ""
+    val error = formatDataMap(conversionData) // +
+        // if (!hasFatalError && remainingArgs.isNotEmpty()) {
+        //     hasFatalError = true
+        //     "\n\nUnused: " + remainingArgs.joinToString(" ")
+        // } else ""
 
     if (hasFatalError)
         return Error("```$error```")
