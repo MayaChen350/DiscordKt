@@ -27,7 +27,7 @@ dependencies {
     api("org.slf4j:slf4j-simple:2.0.17")
 
     implementation("org.reflections:reflections:0.10.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.mockk:mockk:1.13.9")
