@@ -4,7 +4,7 @@ object Constants {
     const val projectUrl = "https://github.com/discordkt/$projectName/"
 
     const val kotlin = "2.2.21"
-    const val dokka = "2.0.0"
+    const val dokka = "2.1.0"
     const val kord = "0.17.0"
 }
 
@@ -19,7 +19,12 @@ object Docs {
         createMaven(snapshotUrl, group, version, isSnapshot, isDocs)
     }
 
-    private fun StringBuilder.createGradleKts(snapshotUrl: String, gradleTag: String, isSnapshot: Boolean, isDocs: Boolean) = apply {
+    private fun StringBuilder.createGradleKts(
+        snapshotUrl: String,
+        gradleTag: String,
+        isSnapshot: Boolean,
+        isDocs: Boolean
+    ) = apply {
         appendLine(if (isDocs) "=== \"build.gradle.kts\"" else "### Gradle (Kotlin)")
 
         val block = StringBuilder()
@@ -27,20 +32,24 @@ object Docs {
         block.appendLine("```kotlin")
 
         if (isSnapshot)
-            block.appendLine("""
+            block.appendLine(
+                """
                 repositories {
                     mavenCentral()
                     maven("$snapshotUrl")
                 }
                 
-            """.trimIndent())
+            """.trimIndent()
+            )
 
-        block.appendLine("""
+        block.appendLine(
+            """
             dependencies {
                 implementation("$gradleTag")
             }
             ```
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         appendLine(
             if (isDocs)
@@ -50,7 +59,12 @@ object Docs {
         )
     }
 
-    private fun StringBuilder.createGradleGroovy(snapshotUrl: String, gradleTag: String, isSnapshot: Boolean, isDocs: Boolean) = apply {
+    private fun StringBuilder.createGradleGroovy(
+        snapshotUrl: String,
+        gradleTag: String,
+        isSnapshot: Boolean,
+        isDocs: Boolean
+    ) = apply {
         appendLine(if (isDocs) "=== \"build.gradle\"" else "### Gradle (Groovy)")
 
         val block = StringBuilder()
@@ -58,7 +72,8 @@ object Docs {
         block.appendLine("```groovy")
 
         if (isSnapshot)
-            block.appendLine("""
+            block.appendLine(
+                """
                 repositories {
                     mavenCentral()
                     maven {
@@ -66,14 +81,17 @@ object Docs {
                     }
                 }
                 
-            """.trimIndent())
+            """.trimIndent()
+            )
 
-        block.appendLine("""
+        block.appendLine(
+            """
             dependencies {
                 implementation '${gradleTag}'
             }
             ```
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         appendLine(
             if (isDocs)
@@ -83,7 +101,13 @@ object Docs {
         )
     }
 
-    private fun StringBuilder.createMaven(snapshotUrl: String, group: String, version: String, isSnapshot: Boolean, isDocs: Boolean) = apply {
+    private fun StringBuilder.createMaven(
+        snapshotUrl: String,
+        group: String,
+        version: String,
+        isSnapshot: Boolean,
+        isDocs: Boolean
+    ) = apply {
         appendLine(if (isDocs) "=== \"pom.xml\"" else "### Maven")
 
         val block = StringBuilder()
@@ -91,7 +115,8 @@ object Docs {
         block.appendLine("```xml")
 
         if (isSnapshot)
-            block.appendLine("""
+            block.appendLine(
+                """
                 <repositories>
                     <repository>
                         <id>Sonatype Snapshots</id>
@@ -99,9 +124,11 @@ object Docs {
                     </repository>
                 </repositories>
                 
-            """.trimIndent())
+            """.trimIndent()
+            )
 
-        block.appendLine("""
+        block.appendLine(
+            """
             <dependencies>
                 <dependency>
                     <groupId>${group}</groupId>
@@ -110,7 +137,8 @@ object Docs {
                 </dependency>
             </dependencies>
             ```
-        """.trimIndent())
+        """.trimIndent()
+        )
 
         append(
             if (isDocs)

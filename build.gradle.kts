@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.registering
+import org.jetbrains.dokka.DokkaDefaults.includeNonPublic
+
 group = "me.jakejmattson"
 version = "0.24.0"
 val projectGroup = group.toString()
@@ -10,8 +13,8 @@ plugins {
 
     //Publishing
     signing
-    `maven-publish`
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("org.gradle.maven-publish")
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 
     //Misc
     id("com.github.ben-manes.versions") version "0.51.0"
@@ -44,7 +47,7 @@ tasks {
 
     compileKotlin {
         compilerOptions {
-            freeCompilerArgs.add("-Xopt-in=kotlin.RequiresOptIn")
+            freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         }
 
         doLast("writeProperties") {}
@@ -63,20 +66,7 @@ tasks {
     }
 
     dokkaHtml.configure {
-        outputDirectory.set(buildDir.resolve("dokka"))
 
-        dokkaSourceSets {
-            configureEach {
-                platform.set(org.jetbrains.dokka.Platform.jvm)
-
-                includeNonPublic.set(false)
-                skipEmptyPackages.set(true)
-                reportUndocumented.set(true)
-
-                includes.from("packages.md")
-                suppressedFiles.from("src\\main\\kotlin\\me\\jakejmattson\\discordkt\\TypeContainers.kt")
-            }
-        }
     }
 
     copy {
@@ -131,17 +121,37 @@ tasks {
     }
 }
 
-val sourcesJar by tasks.creating(Jar::class) {
+dokka {
+    dokkaPublications.html {
+        outputDirectory.set(layout.buildDirectory.dir("dokka"))
+    }
+
+    dokkaSourceSets.main {
+//        platform.set(org.jetbrains.dokka.Platform.jvm)
+
+//        includeNonPublic.set(false)
+        skipEmptyPackages.set(true)
+        reportUndocumented.set(true)
+
+        includes.from("packages.md")
+        suppressedFiles.from("src\\main\\kotlin\\me\\jakejmattson\\discordkt\\TypeContainers.kt")
+    }
+}
+
+
+val sourcesJar by tasks.registering(Jar::class) {
+    ->
     dependsOn("writeProperties")
     archiveClassifier.set("sources")
     from(sourceSets["main"].allSource)
 }
 
-val dokkaJar by tasks.creating(Jar::class) {
+val dokkaJar by tasks.registering(Jar::class) {
+    ->
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     archiveClassifier.set("javadoc")
-    from(tasks.dokkaJavadoc)
-    dependsOn(tasks.dokkaJavadoc)
+    from(tasks.dokkaGenerate)
+    dependsOn(tasks.dokkaGenerate)
 }
 
 publishing {
