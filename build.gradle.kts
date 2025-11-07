@@ -13,7 +13,7 @@ plugins {
 
     //Publishing
     signing
-    id("org.gradle.maven-publish")
+    `maven-publish`
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 
     //Misc
@@ -42,7 +42,7 @@ tasks {
     }
 
     kotlin {
-        jvmToolchain(11)
+        jvmToolchain(17)
     }
 
     compileKotlin {
@@ -58,15 +58,11 @@ tasks {
         property("version", project.version.toString())
         property("kotlin", Constants.kotlin)
         property("kord", Constants.kord)
-        setOutputFile("src/main/resources/library.properties")
+        destinationFile.set(file("src/main/resources/library.properties"))
     }
 
     test {
         useJUnitPlatform()
-    }
-
-    dokkaHtml.configure {
-
     }
 
     copy {
@@ -83,13 +79,13 @@ tasks {
 
     register("generateDocs") {
         description = "Generate documentation for discordkt.github.io"
-        dependsOn(dokkaHtml)
+        dependsOn(dokkaGenerate)
 
         copy {
             val docsPath = "../discordkt.github.io/docs/"
 
             delete(file("$docsPath/api"))
-            from(buildDir.resolve("dokka"))
+            from(layout.buildDirectory.dir(("dokka")))
             into(file("$docsPath/api"))
 
             file("$docsPath/install.md").writeText(
